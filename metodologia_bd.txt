@@ -1,0 +1,1688 @@
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+ 
+ 
+ 
+ 
+METODOLOGIA DE PADRÕES E 
+NOMENCLATURAS DE BANCO DE DADOS 
+ 
+ 
+ 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+2/30 
+ 
+Histórico de Revisões 
+Versão 
+Data 
+Descrição 
+Autor 
+1.0 
+28/02/2025 
+Criação do documento 
+CGDAD 
+1.1 
+12/03/2025 
+Readequação do layout aos padrões do MJ 
+CGDAD 
+1.2 
+05/09/2025 
+Alterações na estrutura do leiaute, aderentes ao 
+padrão da STI 
+CGISO/COPR 
+1.3 
+03/10/2025 
+Ajustes relacionados com AD e DBA 
+CGISO/COPR 
+ 
+ 
+ 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+3/30 
+ 
+ 
+Sumário 
+ 
+1. INTRODUÇÃO ................................................................................................................................................ 5 
+2. MODELAGEM E CRIAÇÃO DE OBJETOS DE BANCO DE DADOS ..................................................................... 5 
+2.1. Regras gerais ................................................................................................................................... 5 
+2.2. Restrição de integridade ................................................................................................................ 6 
+2.2.1. Restrições de chaves ............................................................................................................... 6 
+2.2.2. Restrições de Integridade Referencial .................................................................................... 7 
+2.2.3. Restrições de Domínio ............................................................................................................ 7 
+2.3. Atributos Multivalorados ................................................................................................................. 9 
+2.4. Obrigatoriedade de Colunas ............................................................................................................ 9 
+2.5. Definição de Tamanho de Colunas do Tipo Texto ......................................................................... 9 
+2.6. Definição de tamanhos de campos comumente utilizados ........................................................ 9 
+2.7. Tabelas Existentes em Outros Esquemas (Schemas) ..................................................................... 10 
+2.8. Armazenamento de arquivos ........................................................................................................ 10 
+2.9. Tabelas ........................................................................................................................................... 10 
+2.10. Tabelas Temporárias .................................................................................................................... 10 
+2.11. Junções (JOINS) ............................................................................................................................ 10 
+2.12. Índices .......................................................................................................................................... 11 
+3. NOMENCLATURA DE OBJETOS DE BANCO DE DADOS ............................................................................... 11 
+3.1. Regras Gerais ................................................................................................................................. 11 
+3.2. Regras para Abreviação de Palavras .............................................................................................. 11 
+3.3. Prefixo Identificador dos Objetos do Banco de Dados .................................................................. 12 
+3.4. Nomenclatura de Colunas de Tabelas e Views de Banco de Dados .............................................. 14 
+4. CRIAÇÃO DE DICIONÁRIO DE DADOS ......................................................................................................... 15 
+4.1. Regras Gerais ................................................................................................................................. 16 
+4.2. Requisitos Essenciais de Informação ............................................................................................. 16 
+4.3. Regras de Permissão de Acesso e Armazenamento do Modelo ................................................... 18 
+5. CRIAÇÃO DE USUÁRIOS E SEGURANÇA DOS DADOS .................................................................................. 18 
+5.1. Regras para criação de usuários .................................................................................................... 18 
+5.2. Regras para permissões de acesso aos dados ............................................................................... 19 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+4/30 
+ 
+6. SISTEMA GERENCIADOR DE BANCO DE DADOS, VALIDAÇÃO E VERSIONAMENTO ................................... 19 
+6.1. Escolha de SGBD ............................................................................................................................ 19 
+6.2. Validação de Modelos.................................................................................................................... 20 
+6.3. Versionamento .............................................................................................................................. 20 
+6.4. Cabeçalhos para Objetos ............................................................................................................... 21 
+6.5. Instruções para a Elaboração de Scripts ........................................................................................ 23 
+7. CONSULTAS / EXTRAÇÕES DE DADOS ........................................................................................................ 23 
+7.1. Instruções Gerais ........................................................................................................................... 23 
+8. INSTRUÇÕES DE REQUISIÇÃO DE MUDANÇA – RDM (ROLLUP) ................................................................. 23 
+8.1. Instruções Gerais ........................................................................................................................... 23 
+8.2. Instruções para Execução de UNDO .............................................................................................. 26 
+9. INSTRUÇÕES DE EXPORTAÇÃO/IMPORTAÇÃO E CARGAS .......................................................................... 27 
+9.1. Procedimentos para Exportação e Importação de Dados (Dump) ................................................ 27 
+9.2. Procedimentos para Execução de Cargas ...................................................................................... 28 
+10. NORMAS PARA USO DA AUDITORIA ......................................................................................................... 28 
+11. FLUXO DE VALIDAÇÃO .............................................................................................................................. 30 
+11.1. Validação do Modelo de Dados ................................................................................................... 30 
+11.2. Validação de Script ...................................................................................................................... 30 
+12. APROVAÇÕES ...................................................................................... ERRO! INDICADOR NÃO DEFINIDO. 
+ 
+ 
+ 
+ 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+5/30 
+ 
+METODOLOGIA DE PADRÕES E NOMENCLATURAS DE BANCO DE DADOS 
+ 
+1. INTRODUÇÃO 
+ 
+A atividade de Administração de Dados traz, em seu cerne, a preocupação em desenvolver 
+e administrar de modo centralizado as estratégias, procedimentos e práticas para gerência dos 
+dados da organização.  
+A adoção de um padrão e a normatização de processos de criação de objetos nas bases de 
+dados tem por objetivo a uniformização do entendimento acerca das informações que o Ministério 
+da Justiça e Segurança Pública (MJSP) produz, diminuindo a complexidade dos sistemas, propiciando 
+a integridade de suas informações, mitigando riscos de desentendimento, facilitando a manutenção 
+dos objetos existentes e/ou objetos a serem construídos e disponibilizados na base de dados. Além 
+disso, a indicação de boas práticas na construção de consultas SQL visa propiciar um melhor 
+desempenho das aplicações e reduzir a sobrecarga dos bancos de dados.  
+Nesse contexto, apresenta-se este documento de padrões e normas para bancos de dados, 
+resultado de análise do atual cenário, cujo objetivo é definir padrões de modelagem e nomenclatura 
+na construção de consultas SQL e procedimentos que devem ser seguidos por todas as áreas de 
+desenvolvimento de aplicações.  
+Os objetos legados não serão afetados, entretanto novos objetos criados e/ou alterados, 
+mesmo que derivados dos objetos legados, devem se enquadrar aos padrões e às normas 
+estabelecidas neste documento. 
+ 
+2. MODELAGEM E CRIAÇÃO DE OBJETOS DE BANCO DE DADOS 
+ 
+Neste tópico, são apresentados os padrões e as normas para modelagem e criação de 
+objetos de banco de dados. Os itens a seguir tratam de requisitos mínimos que devem ser 
+apresentados em um modelo de dados. O objetivo é reduzir a complexidade e minimizar os riscos 
+operacionais na gestão dos bancos de dados do MJSP, garantindo qualidade e uniformidade dos 
+objetos a serem construídos e disponibilizados nos ambientes de banco de dados. 
+ 
+2.1. Regras gerais 
+ 
+2.1.1. Todos os modelos de dados disponíveis para avaliação devem no mínimo obedecer a 3ª 
+FORMA NORMAL, ou seja, deve-se decompor a tabela até que não haja dependência 
+funcional entre os atributos não-chave. No caso de desnormalizações necessárias para 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+6/30 
+ 
+melhoria de desempenho, deve se justificar para avaliação da equipe de Administração 
+de Dados; 
+2.1.2. Todas as tabelas devem, obrigatoriamente, possuir uma chave primária definida; 
+2.1.3. Nos casos de chave primária auto incrementada, devem ser usadas sequenciais, auto 
+incrementação ou serialização para se garantir unicidade na geração de registros; 
+2.1.4. Caso a tabela faça referência a dados de outras tabelas, deve-se definir a chave 
+estrangeira correspondente ao relacionamento; 
+2.1.5. Para todos os objetos criados no banco de dados, deve-se obedecer aos padrões de 
+nomenclatura definidos neste documento; 
+2.1.6. Deve-se atentar para a qualidade do dicionário de dados, visando facilitar o 
+entendimento das informações armazenadas (vide seção 4); 
+2.1.7. Nenhum registro pré-formatado (uso de máscaras) deve ser armazenado no banco de 
+dados; 
+2.1.8. Nos modelos de dados, deve-se indicar com cor diferente os objetos que pertencem a 
+outra base/esquema, descrevendo esta integração; 
+2.1.9. Deve-se utilizar o padrão SQL ANSI 99 ou superior; 
+2.1.10. Os tipos de dados CLOB, BLOB, TEXT, BINARY ou similares não devem ser utilizados. 
+Caso haja a necessidade de utilização, a mesma deverá ser justificada para avaliação 
+da equipe de Administração de Dados. 
+ 
+2.2. Restrição de integridade 
+ 
+Regras de integridade referem-se à precisão ou à correção dos dados no banco de dados. 
+Dessa forma, as restrições de integridade garantem que mudanças realizadas na base de dados não 
+resultem em perda de consistência dos dados, protegendo, assim, o banco de dados de danos 
+acidentais. Os próximos tópicos desta seção tratam dos tipos mais comuns de restrições de 
+integridade que devem ser mantidos no modelo de dados. 
+ 
+2.2.1. Restrições de Chaves 
+a) Chaves primárias devem obter as propriedades de unicidade e irredutibilidade; 
+b) Chaves estrangeiras devem possuir um valor correspondente ao de uma chave 
+primária. Caso contrário, deve-se incluir uma cláusula no dicionário de dados do 
+modelo de dados, explicitando a possibilidade de existência de registros “filhos” sem 
+“pai”, juntamente com o motivo que levou a escolha deste tipo de opção. Para este 
+tipo de escolha, o Administrador de Dados irá avaliar se cabe o uso deste tipo de 
+implementação e, ainda, se existem outras formas de construção do modelo que 
+atenda ao objetivo desejado; 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+7/30 
+ 
+c) Todas as chaves primárias, estrangeiras e únicas devem possuir um nome seguindo 
+os padrões de nomenclatura de objetos. 
+ 
+2.2.2. Restrições de Integridade Referencial 
+a) O banco de dados não deve conter quaisquer valores de chaves estrangeiras não 
+associadas a uma chave primária. Se B faz referência a X, então X deve existir. Existem 
+casos em que não é possível eliminar registros sem referência. Para estes casos, deve-
+se incluir no dicionário de dados do modelo em questão, de forma clara e objetiva, 
+os motivos que levaram a escolha de se manter no banco de dados registros sem 
+referência. Os motivos estarão sujeitos à análise do Administrador de Dados que irá 
+avaliar se a escolha foi a melhor alternativa e, ainda, se existe outra forma de 
+implementação possível para evitar este tipo de situação; 
+b) Cada coluna da chave estrangeira deve possuir a mesma formatação do campo 
+correspondente da chave primária associada; 
+c) Para cada relacionamento regular de cardinalidade N: M uma tabela associativa TꞋ 
+deve ser implementada, contendo todos os atributos característicos do 
+relacionamento e as chaves primárias das tabelas T1 e T2 envolvidas no 
+relacionamento. Dessa forma, a tabela associativa ou de controle, tem como chave 
+primária as duas chaves estrangeiras provenientes de T1 e T2. O uso da chave 
+primária composta pode ser substituído por uma chave artificial quando a tabela TꞋ 
+participar de outros relacionamentos para evitar a transposição de chaves 
+estrangeiras, porém deve-se criar um índice único composto pelas chaves 
+estrangeiras provenientes de T1 e T2; 
+d) No dicionário de dados deve-se especificar quais são as tabelas envolvidas no 
+relacionamento e, nos casos de a tabela fazer parte de outros relacionamentos - 
+incluindo agregação, o dicionário de dados também deve ser alimentado destas 
+informações. Lembrando que o padrão de nomenclatura para este tipo de tabela é 
+RL__ ou RL_, quando houver a possibilidade de usar um nome mais apropriado para 
+o relacionamento, conforme especificado na sessão Nomenclatura de Objetos de 
+Banco de Dados (Sessão 3); 
+e) As restrições de integridade referencial definidas em banco de dados devem 
+permanecer habilitadas. 
+ 
+2.2.3. Restrições de Domínio 
+a) Devem ser implementadas restrições de domínio no banco de dados para garantir a 
+integridade dos dados, preferencialmente com check constraints. Recomenda-se que 
+estas restrições (regras de consistência) residam também na camada de aplicação; 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+8/30 
+ 
+b) Todas as check constraints devem possuir um nome seguindo os padrões de 
+nomenclatura de objetos; 
+c) Procedures e triggers devem conter a descrição detalhada das regras de integridade 
+no cabeçalho do script, conforme especificado neste documento; 
+d) O uso de triggers será avaliado pela equipe de Administração de Dados quanto à sua 
+real necessidade, à complexidade da lógica e ao volume de eventos acionadores 
+(transações) na tabela, visto que o uso de tal recurso pode trazer impactos de 
+performance e se mostrar ineficaz; 
+e) Restrições de atributo são obrigatórias para colunas de status e tipo. Além disso, esta 
+regra aplica-se para quaisquer outras colunas que possuam domínio finito e 
+conhecido. Restrições de transição de estado devem ser também implementadas 
+para garantir que a transição de um estado correto de um atributo para outro estado 
+seja válida; 
+f) O dicionário de dados do modelo em questão deve explicitar, de forma clara e 
+objetiva, quais são as restrições de domínio do modelo. 
+ 
+Tabela 1 – Exemplos de restrições de domínio de atributo, tupla e transição de estado. 
+TIPO DE 
+RESTRIÇÃO 
+DE 
+DOMÍNIO 
+COLUNA 
+DOMÍNIO 
+DESCRIÇÃO 
+Restrição de 
+atributo 
+ST_ATIVO 
+S para Ativo 
+N para Inativo 
+Este tipo de restrição é implementada no banco de 
+dados através de uma check constraint, exceto se o tipo 
+de dado for restritivo (Ex:boolean) 
+Restrição de 
+atributo 
+TP_ESTADO_CIVIL 
+S para Solteiro 
+C para Casado 
+E para 
+Separado 
+D para 
+Divorciado 
+V para Viúvo 
+Este tipo de restrição é implementada no banco de 
+dados através de uma check constraint. 
+Restrição de 
+tupla 
+DT_INICIAL 
+DT_FIM 
+DT_INICIAL < 
+DT_FIM 
+Este tipo de restrição pode ser implementada no banco 
+de dados através de check constraint ou através de 
+trigger. 
+Restrição de 
+transição de 
+estado 
+TP_ESTADO_CIVIL 
+S → C válido 
+S → V inválido 
+Se o estado inicial correto for solteiro (S), a transição 
+para o estado de Casado (C) é válida. Entretanto, caso o 
+estado inicial correto seja solteiro (S), a transição para o 
+estado de Viúvo (V) é inválida. Este tipo de restrição 
+pode ser implementada através de trigger 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+9/30 
+ 
+2.3. Atributos Multivalorados 
+• Para atributos multivalorados, uma tabela TꞋ deve ser criada contendo a chave primária da 
+tabela T e o atributo multivalorado AM. A chave primária de TꞋ será a chave primária da 
+tabela T e o atributo multivalorado AM. Se a chave primária de T for composta, então a 
+tabela TꞋ conterá todos os atributos que compõem a chave de T. Exemplo: telefone. 
+ 
+2.4. Obrigatoriedade de Colunas 
+a) Deve-se evitar a definição de campos nulos nas tabelas. Para campos que recebam apenas 
+valores nulos, uma justificativa deve ser incluída no dicionário de dados e o Administrador 
+de Dados avaliará a proposição, podendo ou não aceitá-la, após análise; 
+b) Para tabelas novas, os campos que recebem valores nulos ou não nulos devem ser 
+agrupados, criando primeiramente os campos com valores não nulos e em seguida com os 
+valores nulos. 
+ 
+2.5. Definição de Tamanho de Colunas do Tipo Texto 
+• Para colunas que possuam um tamanho definido (finito), o tipo de dados usado na 
+definição do campo deve ser char e não utilizar máscara no conteúdo. Isto se aplica para 
+campos que armazenem siglas, status ou tipo de registros. Exemplos: CEP, CNPJ, CPF, etc. 
+ 
+2.6. Definição de tamanhos de campos comumente utilizados 
+• Alguns campos alfanuméricos de comprimento variável são comumente utilizados pelas 
+aplicações e devem, portanto, usar tamanhos padronizados. Segue abaixo quadro com os 
+campos mais comuns. 
+ 
+Campo 
+Tamanho 
+Descrição 
+NO_PESSOA 
+VARCHAR(100) 
+Qualquer campo que contenha o nome de pessoa 
+DS_LOGRADOURO 
+VARCHAR(200) 
+Qualquer campo que contenha o logradouro do endereço 
+DS_COMPLEMENTO 
+VARCHAR(60) 
+Qualquer campo que contenha o complemento do endereço 
+NO_BAIRRO 
+VARCHAR(80) 
+Qualquer campo que contenha o nome de bairro 
+DS_EMAIL 
+VARCHAR(100) 
+Qualquer campo que contenha o e-mail 
+NO_MUNICIPIO 
+VARCHAR(100) 
+Qualquer campo que contenha nome de munícipio 
+NO_CARGO 
+VARCHAR(100) 
+Qualquer campo que contenha nome de cargo 
+DS_REFERENCIA_ENDERECO 
+VARCHAR(100) 
+Qualquer campo que contenha um ponto de referência de um 
+endereço 
+Tabela 2 – Sugestão de tamanho de campos texto 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+10/30 
+ 
+2.7. Tabelas Existentes em Outros Esquemas (Schemas) 
+a) O acesso aos objetos de outros esquemas, inclusos no modelo de dados (explicitamente), 
+será realizado, preferencialmente, através de views, materializadas ou não, ou concessão 
+de privilégio de consulta às tabelas necessárias. Com relação às views, materializadas ou 
+não, devem ser implementadas no esquema do sistema que as utilizará, com apenas 
+permissão de consulta; 
+b) No caso de views materializadas devem ser especificados o conteúdo (uma ou mais tabelas, 
+colunas e filtros), frequência (tempo de atualização) e forma (completa ou parcial); 
+c) A replicação de tabelas e/ou dados existentes em outros esquemas deve ser justificada, 
+caso necessária. 
+ 
+2.8. Armazenamento de arquivos 
+a) Nenhum arquivo será armazenado no banco de dados. Para estes casos, uma pasta no 
+servidor de arquivos deve ser criada para armazenamento dos arquivos. O banco de dados 
+deve apenas armazenar os endereços (caminho) dos arquivos. Exemplos: imagens, 
+arquivos texto, etc.; 
+b) O dicionário de dados deve explicitar o uso de arquivos externos e ainda o tipo (extensão) 
+de arquivo utilizado pela aplicação. 
+ 
+2.9. Tabelas 
+• Tabelas devem conter, na estrutura de criação, o apontamento em qual tablespace os 
+dados e índices devem ser armazenados, conforme definido no documento de arquitetura. 
+ 
+2.10. Tabelas Temporárias 
+a) Tabelas físicas com finalidade temporária têm vida útil. O tempo máximo de existência é 
+de 60 dias. Após este período, a tabela será removida; 
+b) Usar tabelas temporárias nos SGBD’s que possuam o recurso, sempre que possível 
+(Ex:Temporary Table ou Global Temporary Table); 
+c) No nome da tabela física, com finalidade temporária, deve conter a data de sua criação. 
+ 
+2.11. Junções (JOINS) 
+• Consultas com JOINS com mais de seis tabelas só devem ser implementadas mediante 
+justificativa e aprovação da equipe de Administração de Dados. 
+ 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+11/30 
+ 
+2.12. Índices 
+a) A criação de índices deve estar diretamente ligada às consultas efetuadas pelo sistema. 
+Estas consultas deverão estar adicionadas nos objetivos do script de criação dos índices 
+e obrigatoriamente devem ser avaliados pelas equipes de Administração de Dados e 
+Administração de Banco de Dados; 
+b) A criação de qualquer índice, excetuando-se os índices de PK, UK e FK, deverá 
+obrigatoriamente ser submetida à análise da equipe de Administração de Dados e 
+Administração de Banco de Dados e devidamente justificada e documentada no 
+dicionário de dados. 
+ 
+3. NOMENCLATURA DE OBJETOS DE BANCO DE DADOS 
+ 
+Os objetos de banco de dados devem obedecer aos seguintes critérios básicos no que diz 
+respeito à nomenclatura de objetos: 
+ 
+3.1. Regras Gerais 
+a) Uso de caracteres alfanuméricos apenas;  
+b) Letras maiúsculas;  
+c) Em nomes compostos por mais de uma palavra, deve-se utilizar o caractere underline (‘_’) 
+como separador entre as palavras;  
+d) Palavras devem ser usadas no singular;  
+e) Conter, no máximo, 30 caracteres, independentemente do SGBD. Os critérios de 
+nomenclatura especificados neste documento devem ser aplicados na criação de novos 
+objetos, ainda que em bancos de dados legados, onde não houve a observância destes 
+padrões e normas durante a sua construção. Os objetos a que se refere este parágrafo são 
+todos aqueles listados na Tabela 4 da Seção 3.3 e na Tabela 5 da Seção 3.4. 
+ 
+3.2. Regras para Abreviação de Palavras 
+As abreviações devem seguir as regras descritas abaixo: 
+a) O uso de acrônimos ou abreviações é permitido quando o tamanho do nome do objeto 
+ultrapassar o tamanho máximo de caracteres permitido. Os acrônimos devem seguir a 
+convenção nacional, como por exemplo, CEP, CPF, CNPJ, etc.; 
+b) Mantém a primeira sílaba e a letra seguinte da próxima sílaba da palavra a ser abreviada;  
+c) Caso a primeira letra da segunda sílaba seja vogal, escreve-se até a próxima consoante;  
+d) Caso a segunda sílaba inicie-se com uma consoante, as duas consoantes farão parte da 
+abreviação (ainda que a consoante seja dobrada, como “pessoa”, por exemplo); 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+12/30 
+ 
+Exemplos: 
+PALAVRAS 
+ABREVIAÇÃO 
+SITUAÇÃO 
+SIT 
+ENTIDADE 
+ENT 
+PESSOA 
+PESS 
+SECRETARIA 
+SEC 
+Tabela 3 - Exemplo de abreviatura de palavras 
+ 
+e) As palavras abreviadas não devem conter comprimento menor do que três caracteres, 
+salvo em casos de a palavra ser autoexplicativa, como ‘KB’, ‘GB’, ‘MB’. 
+ 
+3.3. Prefixo Identificador dos Objetos do Banco de Dados 
+Abaixo, estão apresentados os padrões de nomenclatura de objetos de banco de dados. 
+a) Todos os objetos são identificados por intermédio do prefixo indicador do tipo de objeto, 
+seguido do separador ‘_’, adicionado ao nome do objeto propriamente dito; 
+b) O quadro a seguir apresenta exemplos de nomes dos objetos listados para facilitar o 
+entendimento; 
+ 
+OBJETO 
+PREFIXO 
+COMPLEMENTO DO OBJETO 
+SUFIXO 
+EXEMPLOS 
+check 
+constraint 
+CK_ 
+<nome da tabela sem prefixo>_<nomedo campo> 
+- 
+CK_PESSOA_STATIVO 
+foreign key 
+FK_ 
+<nome da tabela pai sem prefixo>_<nomeda 
+tabela filha 
+sem prefixo> 
+- 
+FK_FAMILIA_PESSOA 
+foreign key 
+(Duas ou mais 
+FKs entre as 
+mesmas 
+tabelas) 
+FK_ 
+<nome da tabela pai sem prefixo>_<nomeda 
+tabela filha sem prefixo><nome do campo> 
+- 
+FK_MUNICIPIO_FAMI
+LIA_ORIGEM 
+FK_MUNICIPIO_FAMI
+LIA_RES 
+primary key 
+PK_ 
+<nome da tabela sem prefixo>_ 
+<nome do campo> 
+- 
+PK_NM_TABELA_CA
+MPO 
+surrogate key 
+SK_ 
+< nome da tabela sem prefixo >_ 
+- 
+SK_NM_TABELA_CA
+MPO 
+unique key 
+UK_ 
+<número cardial>_<nome da  
+tabela sem prefixo> 
+- 
+UK_1_BENEFICIARIO
+_NIS 
+Function 
+FN_ 
+<nome da função que indique  
+objetivo da mesma> 
+- 
+FN_CALCULA_DV 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+13/30 
+ 
+Index 
+IX_ 
+<numero cardinal> _<nome da  
+tabela sem prefixo> 
+- 
+IX_1_NM_TABELA 
+Sequence 
+SEQ_ 
+<nome da tabela sem prefixo> 
+- 
+SEQ_NM_TABELA 
+Stored 
+Procedures 
+SP_ 
+<nome da procedure que indique  
+o objetivo da mesma> 
+- 
+SP_APLICA_EDUCACA
+O 
+Sistema ou 
+negociais 
+TB_ 
+<nome da entidade> 
+- 
+TB_MUNICIPIO 
+Temporária 
+TMP_ 
+<nome da entidade>_<YYYYMMDD> 
+- 
+TMP_MUNICIPIO_20
+150616 
+Histórico 
+TH_ 
+<nome da entidade> 
+- 
+TH_ MUNICIPIO 
+Associativa / 
+de 
+relacionament
+o 
+RL_ 
+<nome da entidade> ou <nome da tabela 1 sem 
+prefixo>_<nomeda tabela 2 sem prefixo> 
+- 
+RL_OPCOES_RESPOS
+TA_QUEST ou 
+RL_QUESTAVAL_OPC
+RESP 
+Fato 
+FT_ 
+<nome da entidade> 
+- 
+FT_ CIDADE 
+Dimensão 
+DIM_ 
+<nome da entidade> 
+- 
+DIM_LOCALIZACAO 
+Carga 
+LD_ 
+<nome da entidade> 
+- 
+LD_BENEFICIO 
+Sistema 
+TG_ 
+<nome da trigger indicando seu objetivo>_<Letra 
+(I,U,D) que identifica o tipo de transação que  
+dispara a trigger> 
+- 
+TG_ATUALIZA_STATU
+S_ENTIDADE_ U 
+Auditoria 
+TGA 
+<nome da tabela auditada sem prefixo>_<Letra 
+(I,U,D) que identifica o tipo de transação que  
+dispara a trigger> 
+- 
+TGA_MUNICIPIO_I 
+View 
+VW_ 
+<nome da entidade> 
+- 
+VW_ MUNICIPIO 
+View 
+Materializada 
+MV_ 
+<nome da entidade> 
+- 
+MV_ MUNICIPIO 
+Schema 
+ 
+<Sigla do Sistema>, caso o sistema não possua 
+sigla:<nome do Sistema sem preposições> 
+- 
+SIS / SISTEMA 
+Dado 
+TS_ 
+<Sigla do Sistema> caso o sistema não possua sigla 
+<nome do Sistema> 
+_DATA 
+TS_CIN_DATA 
+Índice 
+TS_ 
+<Sigla do Sistema> caso o sistema não possua sigla 
+<nome do Sistema> 
+_IDX 
+TS_CIN_IDX 
+Tabela 4 - Especificação de nomenclatura de objetos de banco de dados 
+Para maior esclarecimento, seguem exemplos da nomenclatura para foreign Keys: Mais de uma 
+FK coexistentes entre duas tabelas:  
+FK_ +  <nome da tabela pai sem prefixo>_<nome da tabela filha sem prefixo><nome do campo 
+sem prefixo> 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+14/30 
+ 
+ 
+Apenas uma FK entre duas tabelas 
+FK_ + <nome da tabela pai sem prefixo>_<nome da tabela filha sem prefixo> 
+  
+ 
+c) Alias ou Synonyms devem ter o mesmo nome do objeto sobre o qual for criado. 
+ 
+3.4. Nomenclatura de Colunas de Tabelas e Views de Banco de Dados 
+• O quadro seguinte apresenta o padrão de nomenclatura de colunas das tabelas de banco 
+de dados estabelecido pelo MJSP. Todos os nomes de colunas são identificados por 
+intermédio do prefixo indicador da classe da coluna, seguido do separador ‘_’, somado ao 
+nome do campo. O quadro apresenta, ainda, o tipo de dado para cada classe de coluna e 
+um exemplo de como o nome deve ser apresentado. 
+¹ Caso haja necessidade de criação de outros tipos de tablespace, utilizar sufixo para delimitar a destinação e submeter à 
+Coordenação-Geral de Gestão e Governança de Dados (CGDAD), para aprovação. 
+DESCRIÇÃO 
+PREFIXO
+TIPO DE DADO 
+EXEMPLO 
+Código numérico, 
+sequencial ou não, único 
+e identificador que 
+represente a chave 
+primária da tabela. 
+ 
+CO_ 
+ 
+Tipo de dado numérico inteiro fixo ou de auto 
+incremento. 
+ 
+CO_PESSOA 
+Data 
+DT_ 
+Tipo de dado Data para descrição de data (ano, 
+mês e dia). 
+ 
+DT_EMISSAO 
+ 
+Hora 
+ 
+HR_ 
+Descrição de horário (horas, minutos, segundos e 
+microssegundos). 
+ 
+HR_EMISSAO 
+ 
+Data/Hora 
+ 
+DH_ 
+Tipo de dado para descrição data e tempo (ano, 
+mês, dia, horas, minutos, segundos e 
+microssegundos). 
+ 
+DH_EMISSAO 
+ 
+Descrição 
+ 
+DS_ 
+Tipo de dado alfanumérico de comprimento 
+variável (o tamanho deve ser informado). 
+ 
+DS_OBSERVACAO
+Georreferenciamento 
+GE_ 
+Tipo de dados específico para dados 
+GE_OBRA 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+15/30 
+ 
+georreferenciados. 
+ 
+Nome 
+ 
+NO_ 
+Tipo de dado alfanumérico de comprimento 
+variável (o tamanho deve ser informado). 
+ 
+NO_SECRETARIA 
+Número 
+NU_ 
+Tipo de dado numérico de valor fixo inteiro ou 
+decimal. 
+NU_TELEFONE_P
+ESSOA NU_CPF 
+ 
+Referência 
+ 
+RF_ 
+Tipo de dado alfanumérico de comprimento 
+variável (o tamanho deve ser informado). 
+ 
+RF_FOLHA 
+ 
+Sigla 
+ 
+SG_ 
+Tipo de dado alfanumérico de comprimento fixo (o 
+tamanho deve ser informado). 
+ 
+SG_UF 
+Status (usado quando há 
+dois valores pré-
+definidos) 
+ST_ 
+Tipo de dado booleano ou 
+alfanumérico de comprimento fixo. 
+ST_ATIVO 
+Tipo (usado quando 
+há um conjunto pré-
+definido e específico 
+de elementos) 
+ 
+TP_ 
+Tipo de dado alfanumérico de comprimento fixo (o 
+tamanho deve ser informado). 
+ 
+TP_USUARIO 
+Quantidade 
+QT_ 
+Tipo de dado numérico inteiro ou decimal. 
+QT_INTEGRANTE_
+FAMILIA 
+Valor 
+VL_ 
+Tipo de dado numérico decimal. Descrição de 
+valor monetário. 
+VL_SALARIO_BRU
+TO 
+Percentual 
+PC_ 
+Tipo de dado numérico decimal. 
+PC_FAMILIA_CAD
+ASTRADA 
+ 
+Chave Substituta 
+ 
+SK_ 
+Tipo de dado (surrogate key) usado em Data 
+Warehouse e em modelo Dimensional. 
+ 
+SK_PERIODO 
+               Tabela 5 - Especificação de nomenclatura de colunas de tabelas de banco de dados 
+ 
+4. CRIAÇÃO DE DICIONÁRIO DE DADOS 
+ 
+A representação gráfica e denominação dos elementos que compõem um modelo de dados 
+não são suficientes para traduzir todos os conceitos do negócio. Além disso, a manutenção dos 
+objetos de banco de dados também é comprometida pela ausência de dicionarização dos objetos. 
+O dicionário de dados é um item obrigatório e tem por objetivo registrar e padronizar 
+conceitos e aumentar a fidelidade ao negócio na interpretação dos conceitos. Faz-se possível, dessa 
+forma, diminuir a complexidade dos modelos de dados e aumentar a uniformidade dos objetos a 
+serem construídos e mantidos no banco de dados. 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+16/30 
+ 
+4.1. Regras Gerais 
+O dicionário de dados deve seguir os seguintes critérios básicos: 
+a) Clareza, objetividade, detalhamento e precisão; 
+b) Justificativa de escolha de tipo de dados CLOB, BLOB, TEXT, BINARY ou similares; 
+c) Especificação de restrições de domínio; 
+d) Citação de exemplos ilustrativos, sempre que possível, para facilitar entendimento; 
+e) Respeito aos padrões e normas vigentes no MJSP; 
+f) Respeito à terminologia da área negocial que está sendo tratado; 
+g) Respeito às normas da língua portuguesa; 
+h) Especificação das regras nas quais os elementos conceituados se encaixam; 
+i) Especificação de exceções às regras, quando aplicáveis; 
+j) Correlação entre conceitos descritos; 
+k) Acréscimo de informações que contribuam para compreensão; 
+l) Para as restrições de integridade referencial e de domínio, deve-se observar as normas 
+dispostas neste documento; 
+m) Observação das boas práticas recomendadas na ISO/IEC-11179-4. 
+ 
+Os seguintes fatores devem ser evitados na descrição dos objetos do modelo de dados: 
+• Ambiguidade; 
+• Sintetização exagerada; 
+• Permissão de inferência; 
+• Distorção do sentido dos termos; 
+• Assunção que um conceito é trivial e não precisa ser detalhado; 
+• Uso de siglas e abreviações na descrição dos elementos. 
+ 
+4.2. Requisitos Essenciais de Informação 
+Os dicionários de dados devem conter, no mínimo, o seguinte conjunto de informações: 
+a) Descrição dos elementos que compõem o modelo de dados: todos os elementos devem 
+ter seu significado descrito, contendo informações sobre as quais os dados serão 
+armazenados; 
+b) Tabelas: considerando que este é o objeto mais significativo do banco de dados, deve 
+documentá-lo com bastante atenção. Sua descrição deve conter o conceito da entidade 
+por ela representada, incluindo a importância e a relação com outras tabelas e objetos do 
+banco de dados.  
+Abaixo estão dispostas algumas perguntas que facilitam a descrição de uma tabela: 
+• O que é a entidade?  
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+17/30 
+ 
+• O que faz a entidade?  
+• Para que serve? 
+• O que engloba a categoria de elementos que compõem a entidade?  
+• O que está excluído dessa categoria? 
+• Quando alguém ou algo passa a ser, ou deixa de ser, um elemento dessa entidade?  
+• Sua permanência nessa categoria é imutável? 
+ 
+Como exemplo, vamos considerar uma tabela que contenha informações de esportistas, sendo 
+seu nome Esportista. De acordo com as regras aqui definidas um exemplo de descrição incorreta: 
+“contém os dados relativos aos esportistas da empresa que participaram de um torneio”. 
+O que se deseja conhecer não é a finalidade do objeto, mas sim:  
+• O que é um esportista? 
+• O que faz um esportista? 
+• Para que serve um esportista? 
+• O que engloba a categoria dos esportistas em nosso caso?  
+• O que exclui a categoria dos esportistas em nosso caso?  
+• Quando alguém passa a ser, ou deixa de ser, um esportista? 
+ 
+Então, uma descrição correta para essa tabela seria: “é todo funcionário da empresa que, para 
+fins desportivos, representa-a em uma ou mais modalidades individuais ou coletivas. São 
+considerados esportistas todos aqueles que participaram oficialmente do grêmio desportivo da 
+empresa por adesão voluntária ou por indicação de terceiros. Não é permitida a participação de 
+pessoas externas à empresa como esportistas”. 
+a) Sequences: devem conter obrigatoriamente a descrição, a regra de incremento e a coluna 
+alimentada pela sequence, caso haja necessidade de alteração, o procedimento deve ser 
+avaliado pela equipe de banco de dados do MJSP; 
+b) Restrições de domínio /Constraints: devem estar descritas, relacionando os atributos que 
+compõem estes objetos e o conjunto de elementos que formam o domínio – quando 
+aplicável; 
+c) Descrição das colunas: deve ser detalhada. Os dados que os campos irão armazenar devem 
+ser descritos. Correlações entre atributos que envolvam regras de negócios devem ser 
+relatados. A opção por tipos de dados específicos deve ser documentada e em caso de 
+dados do tipo texto, o tamanho do campo deve ser justificado. A descrição da coluna, em 
+conjunto com a descrição de sua tabela, deve ser suficiente para a compreensão e 
+interpretação da informação nela registrada; 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+18/30 
+ 
+d) Relacionamentos / Constraints: Os relacionamentos devem estar documentados quanto a 
+sua cardinalidade e obrigatoriedade, explicando questões sensíveis à regra de negócio 
+definida; 
+e) Ex.: Suponha a FK_STATUS_MUNICIPIO; 
+f) Uma descrição apropriada para esta constraint é: a FK_STATUS_MUNICIPIO estabelece a 
+seguinte relação entre as tabelas TB_MUNICIPIO e TB_STATUS, um município 
+necessariamente possui algum status (ATIVO, EXCLUIDO, TRANSFERIDO, MUDOU NOME) e 
+um status poderá estar ou não relacionado a um ou a vários municípios; 
+g) Views/Materialized Views/BodyPackage/Packages: devem estar descritas, principalmente, 
+no que diz respeito à sua usabilidade. No caso de Materialized Views, deve ser informado 
+se ela será atualizada sob demanda ou periodicamente; 
+h) Caso seja sob demanda, deverá ser informado o responsável pela solicitação de atualização 
+da view e também se ela será incremental ou por completo. Materialized Views sob 
+demanda somente serão aceitas quando tecnicamente justificadas; 
+i) Caso seja periodicamente, informar a periodicidade ou data limite para sua atualização. Ex: 
+“Esta Materialized View deve ser atualizada semanalmente, aos domingos” ou “Esta 
+Materialized View deve ser atualizada até o dia 05 de cada mês”; 
+j) As Materialized Views que fazem referência à(s) tabela(s) de outro(s) esquemas(s), serão 
+implementadas no esquema que as utiliza de fato; 
+k) As Materialized Views somente serão utilizadas para fins de consulta, não sendo permitido 
+ao usuário inserir, apagar ou modificar dados destas. A equipe de banco de dados irá 
+conceder apenas permissão de select nas views; 
+l) StoredProcedures/ Functions/ Triggers: Os procedimentos armazenados devem ser 
+descritos quanto a sua funcionalidade e, em caso de implementação de restrições de 
+domínio, as regras devem ser especificadas; 
+m) Caso o objeto seja utilizado por outro recurso que não seja um sistema (p. ex.: apenas para 
+extrações de dados ou por um processo de ETL), a informação sobre o recurso ou a 
+utilização deve ser adicionada à sua descrição. 
+ 
+4.3. Regras de Permissão de Acesso e Armazenamento do Modelo 
+O dicionário de dados, bem como os modelos de dados lógico e físico, deverá ficar armazenado, 
+devidamente versionado, no repositório de dados. 
+ 
+5. CRIAÇÃO DE USUÁRIOS E SEGURANÇA DOS DADOS 
+ 
+5.1. Regras para criação de usuários 
+a) Os tipos de usuários disponíveis seguem abaixo: Usuário dono do esquema-sistema; 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+19/30 
+ 
+b) Usuário de aplicação;  
+c) Usuário de consulta; 
+d) O nome do usuário dono do esquema não deve ser separado por nenhum operador; 
+e) Nenhum usuário terá permissão de DBA no banco de dados. 
+ 
+Exemplos de nomenclatura e privilégios de usuários são apresentados no quadro abaixo: 
+TIPO DE 
+USUÁRIO 
+PREFIXO 
+SUFIXO
+EXEMPLO 
+PERMISSÕES 
+ 
+Sistema 
+ 
+<nome do esquema> 
+ 
+- 
+ 
+CIN 
+Operações DDL, DML e DTL nos 
+objetos pertencentes ao esquema 
+ 
+Aplicação 
+ 
+<nome do esquema> 
+ 
+_APP 
+ 
+CIN _APP 
+Tabelas: insert, select, update e 
+delete Views/sequences: select 
+Procedures/functions: execute 
+Consulta 
+<nome do esquema> 
+_CONS 
+CIN _CONS 
+Tabelas: select 
+Views: select 
+ 
+5.2. Regras para permissões de acesso aos dados 
+a) Nenhum privilégio de acesso pode ser concedido para “PUBLIC”; 
+b) Nenhum privilégio de acesso pode ser propagado com “i”; 
+c) Nenhuma lista de privilégios ou revogações pode conter a opção “ALL” (all privileges); 
+d) Os privilégios e as revogações devem ser explicitamente relacionados e concedidos para 
+usuários ou roles (papéis) específicos, sejam de SELECT, DML ou DDL; 
+e) Nenhum privilégio de acesso poderá ser concedido em ambiente de produção sem a 
+autorização do Gestor da área de negócio. 
+ 
+6. SISTEMA GERENCIADOR DE BANCO DE DADOS, VALIDAÇÃO E VERSIONAMENTO 
+ 
+6.1. Escolha de SGBD 
+a) A equipe de Administração de Dados deve ser consultada quanto à escolha do Sistema 
+Gerenciador de Banco de Dados (SGBD) para novas aplicações durante a definição da 
+arquitetura do sistema. O SGBD definido deve constar da ficha técnica e documento de 
+arquitetura da aplicação; 
+b) As definições de tablespaces e compressão de dados devem ser feitas com a equipe de 
+Banco de Dados e devem seguir o especificado no documento de arquitetura. 
+ 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+20/30 
+ 
+6.2. Validação de Modelos 
+a) Todos os modelos de novos sistemas do MJSP e alterações de modelos de sistemas já 
+existentes devem ser submetidos à avaliação do Administrador de Dados que validará o 
+modelo antes da sua implementação no ambiente de banco de dados e do 
+desenvolvimento/alteração do sistema que o utilizará; 
+b) Devem ser enviados os modelos lógico e físico de banco de dados, com o dicionário de 
+dados seguindo os padrões especificados por esse documento, e o script de implementação 
+do novo modelo ou das alterações realizadas; 
+c) Os modelos e os dicionários de dados devem ser desenvolvidos na ferramenta SQL 
+Developer Data Modeler e os arquivos .ldm e .pdm devem ser versionados em seu 
+respectivo repositório; 
+d) Para avaliação de alterações em bancos de dados, serão necessários os seguintes 
+documentos, que devem ser disponibilizados no repositório padrão e especificados no 
+chamado: 
+• Documento de visão;  
+• Documento de arquitetura; 
+• Especificação de caso de uso, requisito de negócio, história de usuário ou similar;  
+• Modelos lógico e físico de banco de dados; 
+• Script(s) de criação/alteração de banco de dados. 
+ 
+6.3. Versionamento 
+ 
+Em todas as bases de dados, existe a tabela de versionamento (TB_VERSIONAMENTO), por meio 
+da qual será possível acompanhar a versão de banco de dados e de aplicação que está sendo 
+utilizada nos ambientes de homologação e produção. 
+O número de versão é necessário para controlar as evoluções de homologação do modelo de 
+dados e auxiliar a aplicação a identificar em que versão de modelo está funcionando. 
+a) Toda demanda para criação e/ou alteração de objetos deverá vir também com o script de 
+versionamento, de acordo as especificações abaixo relacionadas: 
+NOME DA COLUNA 
+TIPO DE DADO
+RESTRIÇÃO 
+COMENTÁRIO 
+CO_VERSIONAMENTO 
+INTEGER 
+Chave Primária (PK)
+Obrigatório(NN) 
+Identifica a chave primária 
+DT_VERSAO 
+DATE 
+Obrigatório(NN) 
+Data da versão do modelo 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+21/30 
+ 
+ 
+CO_VERSAO 
+ 
+CHAR(20) 
+ 
+Obrigatório(NN) 
+A numeração da versão terá um número antes do 
+ponto e outro depois do ponto, ex: 1.0. Esse número 
+será incrementado a cada interação. 
+DS_ALTERACAO 
+VARCHAR(400) 
+Obrigatório(NN) 
+Data da alteração da alteração/criação do objeto. 
+ 
+NO_MODULO 
+ 
+VARCHAR(100) 
+ 
+Obrigatório(NN) 
+Nome do Módulo, conforme modelo: 
+<nome do sistema> _<Nome do modulo> 
+Ex: CIN_Cadastro 
+Tabela 7 - Estrutura da tabela de versionamento 
+ 
+6.4. Cabeçalhos para Objetos 
+a) Os seguintes objetos de banco de dados devem apresentar cabeçalho no ato de sua 
+criação ou alteração. 
+b) Packages, body packages, stored procedures, functions e triggers devem possuir 
+cabeçalho conforme descrito abaixo: 
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+ESQUEMA.NOME_DO_OBJETO.SQL 
+Copyright: 
+Este programa de computador é de propriedade intelectual do Ministério da Justiça e Segurança 
+Pública. 
+========================================================================== 
+Autor: Fulano de Tal 
+Empresa: Empresa Beta 
+Contato: XXXX-XXXX 
+========================================================================== 
+Objetivo: Importar dados da Folha BFA. Grants 
+Necessários: Usuários e Permissões 
+========================================================================== 
+Histórico de Mudanças: 
+========================================================================== 
+Data 
+Autor 
+Descrição da Alteração 
+ 
+ 
+26/JAN/2015 
+Fulano de Tal 
+Criação do objeto. 
+25/FEV/2015 
+Sicrano de Tal 
+Alteração nos parâmetros de entrada. 
+========================================================================== 
+ 
+ 
+Views e materialized views devem possuir cabeçalho conforme descrito abaixo: 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+22/30 
+ 
+* ESQUEMA.NOME_DO_OBJETO.SQL 
+* Copyright: 
+* Este programa de computador é de propriedade intelectual do Ministério da Justiça e Segurança 
+Pública. 
+ 
+* ============================================================================= 
+* Autor: Fulano de Tal 
+Empresa: Empresa Beta 
+Contato: XXXX-XXXX 
+* ============================================================================= 
+* Objetivo: Seleciona os municípios que sofreram alteração de nome e UF. 
+* ============================================================================= 
+* Esquema(s) Envolvido(s): MJSP_GERAL 
+* Grants Necessários: Usuários e Permissões 
+* ============================================================================= 
+* Tabelas Envolvidas: TB_MUNICIPIO, TB_UNIDADE_FEDERACAO, TB_SITUACAO 
+* Colunas: TB_MUNICIPIO.NO_MUNICIPIO, TB_UNIDADE_FEDERAÇÃO.NO_UF 
+* Filtros: TB_SITUACAO.DS_SITUACAO = ‘MUDOU’ 
+* ============================================================================= 
+* Para Materialized Views: 
+* Atualização: ( ) Sob Demanda 
+( ) Periodicamente 
+* Se periodicamente, frequência de atualização: até o dia 05 de cada mês. 
+* Forma de atualização: ( ) Parcial 
+( ) Completa 
+* ============================================================================= 
+* Histórico de Mudanças: 
+* ============================================================================= 
+* Data 
+Autor 
+Descrição da Alteração 
+*  
+* 26/JAN/2025 
+Fulano de Tal 
+Criação do objeto. 
+* 25/FEV/2025  Sicrano de Tal 
+Inclusão do campo: TB_SITUACAO.DS_SITUACAO 
+* ============================================================================= 
+ 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+23/30 
+ 
+6.5. Instruções para a Elaboração de Scripts 
+a) Essa seção aplica-se à todos os scripts encaminhados à equipe de Banco de Dados. Isso 
+inclui scripts de rollup, scripts de UNDO, scripts de DML/DCL e scripts de consultas; 
+b) Os scripts devem vir qualificados, ou seja, com o nome do esquema de cada objeto 
+explicitado no mesmo; 
+c) Os códigos SQL devem ser escritos em letra maiúscula; 
+d) Todos os scripts encaminhados para a Coordenação-Geral de Gestão e Governança de 
+Dados (CGDAD) devem conter cabeçalho especificando as seguintes informações: 
+• Objetivo do script ou justificativa; 
+• Autor / Empresa / Contato; 
+• Data; 
+• Histórico de atualizações (quando couber); 
+• Data. 
+ 
+7. CONSULTAS / EXTRAÇÕES DE DADOS 
+ 
+7.1. Instruções Gerais 
+a) Considera-se como extração de dados a geração de relatórios e de arquivos como: bases 
+de dados e arquivos Batch; 
+b) Qualquer extração de dados deve ser previamente autorizada pelo gestor da aplicação ou 
+da base de dados; 
+c) Todas as extrações devem ser disponibilizadas em repositório de arquivos especificado pela 
+CGDAD e, opcionalmente por e-mail, quando viável e solicitado. 
+ 
+8. INSTRUÇÕES DE REQUISIÇÃO DE MUDANÇA – RDM (ROLLUP) 
+ 
+8.1. Instruções Gerais 
+a) Todas as requisições de mudança (rollup), tanto para o ambiente de homologação quanto 
+para o ambiente de produção, devem ser solicitados via chamado, registrado na 
+ferramenta de gestão de demandas e executados, exclusivamente, pela equipe de Banco 
+de Dados do MJSP. 
+*  
+====================================================================
+* Autor: Fulano de Tal Empresa: Empresa Beta Contato: XXXX-XXXX 
+*  
+=================================================================== 
+* Objetivo/Justificativa: Reverter alteração na tabela de 
+Município: reverter
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+24/30 
+ 
+b) Todos os pacotes criados para banco de dados devem conter a última versão do modelo e 
+dicionário de dados e, caso haja alteração de objetos, o modelo e dicionário de dados 
+devem ser atualizados contemplando as alterações solicitadas e disponibilizados no 
+repositório de dados do MJSP; 
+c) O Manual de instalação deverá especificar se os scripts de rollup deverão ser executados 
+via linha de comando (CLI) ou ferramenta gráfica (GUI); 
+d) Os comandos DDL e DML devem ser apresentados em scripts distintos dentro do mesmo 
+pacote; 
+e) O tipo de codificação Unicode deve seguir o mesmo do banco de dados de destino, para 
+que não ocorra problema na criação de objetos e nem em cargas de dados; 
+f) Durante a execução de rollup, caso ocorra algum erro, esta será abortada e será executado 
+o script de UNDO. Apenas os comandos executados com sucesso deverão ser revertidos 
+com o script de UNDO; 
+g) Neste caso, caberá ao demandante gerar um novo pacote com as devidas correções e com 
+todos os scripts, e solicitar a abertura de um novo chamado; 
+h) Nos pacotes de rollup, o script de UNDO para DML deverá ser encaminhado pelo solicitante, 
+pois requer conhecimento de regra de negócio. Já o script de UNDO para DDL deverá ser 
+criado pela equipe de Banco de Dados; 
+i) Todo pacote de scripts de banco de dados que necessita ser executado no ambiente de 
+produção deve ser previamente validado, aprovado para execução e executado em 
+homologação. Deve ser aberta uma demanda para sua execução no ambiente de produção 
+até 17h do dia útil que anteceder a janela de execução; 
+j) Os procedimentos de rollup são executados pela equipe de banco de dados no ambiente 
+de produção às segundas-feiras de 12h às 14h ou após 18h, nos casos em que haja 
+procedimentos mais complexos ou demorados, avaliados pela equipe de Banco de Dados. 
+Em caso de feriado, a janela de produção acontecerá no mesmo horário do dia útil 
+subsequente; 
+k) Todo e qualquer procedimento de rollup em ambiente de produção deverá ser 
+previamente autorizado pela CGDAD; 
+l) Procedimentos de rollup emergenciais (fora da janela de execução) serão executados 
+apenas mediante justificativa e autorização expressa dos Coordenadores Gerais ou da 
+Subsecretária de Tecnologia da Informação e Comunicação (STI). Ainda nestes casos, deve 
+ser aberto um chamado para que a equipe de Banco de Dados possa fazer a validação do 
+pacote; 
+m) Para que o rollup seja executado, o cabeçalho deve estar corretamente preenchido (com 
+todas as informações) e colocado exclusivamente no corpo do chamado, qualquer que seja 
+o ambiente. A incorreção do cabeçalho implicará na rejeição do chamado. 
+ 
+O padrão do cabeçalho de requisição de mudança é apresentado a seguir: 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+25/30 
+ 
+*
+ 
+ 
+ 
+* 
+* Ambiente 
+* 
+ 
+Servidor 
+ 
+Instância 
+ 
+Esquema 
+* Homologação 
+SUDBHMXX 
+DB2HMXX 
+XXXX 
+* Produção 
+SUDBPDXX 
+DB2PD0X 
+XXXX 
+* 
+========================================================================= 
+* 
+Histórico 
+ 
+* Data 
+Ambiente 
+ 
+Número do chamado 
+* 
+ 
+ 
+ 
+* DD/MM/AA 
+Homologação
+(validação) 
+AAAAMMDD10000XXX 
+* DD/MM/AA 
+Homologação (execução) 
+AAAAMMDD10000XXX 
+* 
+========================================================================= 
+* 
+* 
+Observações: 
+ 
+ 
+ 
+* ======== REQUISIÇÃO DE MUDANÇA – RDM (ROLLUP DE BANCO DE DADOS) ========= 
+* Emergencial? ( ) Sim 
+( ) Não 
+* Justificativa (caso emergencial):  
+ 
+*   
+ 
+*  ========================================================================= 
+* Aplicação(ões) Impactada(s): XXXX 
+* Esquema(s) Impactado(s): XXXX 
+* Caminho do Pacote: \\unidades1\XXXX\XXXX 
+* Nome do Pacote: OSXXXX_XXXX_RCXX.zip 
+* Demanda Original (caso seja relativo a algum sistema): XXXX 
+*  ========================================================================= 
+* Ambiente em que o pacote deve ser executado: 
+* ( ) Produção 
+( ) Homologação 
+( ) Outro (especificar):  
+ 
+* Se Produção, tempo de execução no ambiente em que foi executado: HH:MM:SS 
+*  ========================================================================= 
+* Objetivo: 
+* ( ) Validação do Pacote 
+* ( ) Execução do Pacote 
+* ( ) Validação e Execução do Pacote (caso a validação seja bem sucedida) 
+*  ========================================================================= 
+* Pacote possui scripts de DDL? ( ) Sim ( ) Não 
+* Pacote possui scripts de REORG? ( ) Sim ( ) Não 
+*  ========================================================================= 
+* Descrição dos Ambientes de BD: 
+*
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+26/30 
+ 
+Em cada script de rollup, deverão ser informados os dados do autor e o objetivo do rollup da 
+seguinte forma: 
+ 
+8.2. Instruções para Execução de UNDO 
+a) Todos os pacotes que possuírem scripts com instruções de DML e DDL ou somente DML 
+deverão conter scripts de UNDO, de modo a possibilitar que o ambiente retorne ao estado 
+anterior em caso de insucesso na execução do pacote. 
+b) No caso de scripts que contenham instrução REORG ou instruções DDL, o script de UNDO 
+será elaborado pela equipe de Banco de Dados. 
+c) Os arquivos com os dados exportados deverão ser armazenados em \\unidades1\UNDO ou 
+anexadas na ferramenta de gestão de demandas. 
+d) Deve constar no nome do arquivo, o sistema e o pacote de referência. 
+e) Seguem exemplos de scripts UNDO. Em regra, o script de UNDO deve conter os comandos 
+de reversão para o script a ser executado. 
+ 
+-- Script a ser executado: Update de um campo 
+UPDATE identidadenacional. Municipio 
+SET nomeMunicipio = ‘Carajás’ 
+WHERE nomeMunicipio = ‘Tapajós’; 
+ 
+*  ========================================================================== 
+* Autor: Fulano de Tal 
+Empresa: Empresa Beta 
+Contato: XXXX-XXXX 
+*  ========================================================================== 
+* Objetivo: Excluir os municípios do estado do Pará da tabela TB_MUNICIPIO. 
+*  ========================================================================== 
+-- Script a ser executado: Delete de todos os município do Pará DELETE 
+identidadenacional. Municipio WHERE nomeMunicipio = ‘PA’; 
+ 
+ 
+-- Comandos de UNDO: Insert de todas as linhas que foram excluídas (UF = ‘PA’). 
+INSERT INTO identidadenacional. Municipio (idMunicipio, nomeMunicipio, codigoMunicipio, uf,
+linha1, linha2, siglaUF) 
+VALUES (30,'AFUA',2,'PA',’linha1’,'linha2’,’PA’); 
+INSERT INTO identidadenacional. Municipio (idMunicipio, nomeMunicipio, codigoMunicipio, uf,
+linha1, linha2, siglaUF) 
+VALUES (180,'BREVES',1,'PA','linha1',’linha2’, ‘PA’); 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+27/30 
+ 
+-- Comandos de UNDO: Update reverso 
+UPDATE identidadenacional. Municipio 
+SET nomeMunicipio = ‘Tapajós’ 
+WHERE nomeMunicipio = ‘Carajás’; 
+ 
+9. INSTRUÇÕES DE EXPORTAÇÃO/IMPORTAÇÃO E CARGAS 
+ 
+9.1. Procedimentos para Exportação e Importação de Dados (Dump) 
+a) Todos os procedimentos de exportação/importação de dados para os ambientes de 
+homologação e produção devem possuir cabeçalho preenchido integralmente e 
+corretamente no corpo da demanda, informando a ciência e concordância do seu 
+respectivo curador; 
+b) Nenhum procedimento de exportação/importação de dados deve ser executado sem a 
+autorização, da CGDAD e sem a ciência do seu curador. 
+ 
+O padrão de cabeçalho da exportação/importação é apresentado a seguir: 
+ 
+* = CABEÇALHO PARA SOLICITAÇÃO DE EXPORTAÇÃO/IMPORTAÇÃO - BANCO DE DADOS = 
+* Aplicação(ões) Impactada(s):  
+ 
+* Demanda(s) Impactada(s):  
+ 
+* Banco(s) Impactado(s):  
+_ 
+* Esquema(s) Impactado(s):  
+* Justificativa da Exportação/Importação:  
+ 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+28/30 
+ 
+ 
+ 
+9.2. Procedimentos para Execução de Cargas 
+a) Somente são aceitas cargas com comandos NOCHECK, NOVALIDATE ou NOT ENFORCED 
+quando houver justificativa e autorização explícita da CGDAD para realização de tal 
+procedimento. Estes comandos impedem validações de check constraints no momento da 
+carga, podendo gerar inconsistência de dados. 
+b) Cargas de grandes volumes de dados em tabelas criadas para essa finalidade devem ser 
+precedidas de criação de tablespace específica. 
+c) Para toda carga de dados deve ser definido um script de UNDO ou um procedimento de 
+reversão de carga caso seja necessária a sua reexecução. 
+d) Após a execução de cargas de dados, devem ser coletadas novas estatísticas para as tabelas 
+afetadas e recriados os seus índices. 
+ 
+10. NORMAS PARA USO DA AUDITORIA 
+ 
+A auditoria é utilizada para registrar as informações de autoria e tempo relativas à execução de 
+instruções DML sobre tabelas do Banco de Dados. 
+ 
+ 
+ 
+Tipo de Exportação/Importação: 
+( ) Dados 
+Origem: 
+( ) Produção
+Destino: 
+( ) Produção
+( ) Estrutura
+( ) Ambos
+( ) Homologação
+( ) Outro:  
+ 
+( ) Homologação
+( ) Outro:  
+ 
+Necessita de Backup do Destino? 
+( ) Sim 
+( ) Não 
+Se sim, de que tipo? 
+( ) Dados 
+( ) Estrutura 
+( ) Ambos 
+*  ======================================================================= 
+Os seguintes envolvidos estão cientes e de acordo: 
+Gerente de Projeto (FSW):  
+_ 
+Telefone:  
+ 
+E-Mail:  
+ 
+Gestor da Aplicação:  
+ 
+Telefone:  
+ 
+E-Mail:  
+ 
+Curador:  
+ 
+Telefone:  
+ 
+E-Mail:  
+ 
+*  ======================================================================= 
+Observações (caso necessário):  
+ 
+ 
+_ 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+29/30 
+ 
+a) As tabelas a serem auditadas serão definidas pela à Coordenação-Geral de Gestão e 
+Governança de Dados (CGDAD), a partir da necessidade de auditoria do sistema, conforme 
+solicitação do gestor de negócio; 
+b) Caso haja a necessidade de auditoria sobre uma base de dados alimentada por rotinas de 
+carga, a definição das tabelas a serem auditadas caberá à Coordenação-Geral de Gestão e 
+Governança de Dados (CGDAD), conforme solicitação do gestor de negócio; 
+c) Todas as instruções DML executadas por sistemas ou pela equipe de Banco de Dados em 
+tabelas auditadas devem ser registradas pela auditoria. Entende-se como comandos ou 
+instruções DML qualquer comando de INSERT, DELETE e UPDATE; 
+d) Antes de qualquer instrução DML, deve ser executado o procedimento armazenado (stored 
+procedure) SP_INICIA_AUDITORIA para registrar as informações sobre o autor das 
+operações DML’s executadas. O procedimento SP_INICIA_AUDITORIA deve ser qualificado 
+pelo nome do esquema em que foi criado. O nome do esquema deverá ser fornecido pela 
+CGDAD. 
+Seguem, abaixo, exemplos de linhas de comando para a execução deste procedimento: 
+ 
+  
+Descrição dos parâmetros: 
+• V_NO_LOGIN_APP: CPF/ LOGIN do usuário que está logado V_DS_IP: IP da máquina 
+em que o usuário está logado; 
+• V_DS_SISTEMA: 
+sistema em que a instrução 
+DML está sendo executada. 
+V_DS_TRANSACAO: módulo do sistema através do qual foi realizada a DML; 
+• V_DS_OBSERVACAO: observações gerais a serem registradas; 
+• V_SESSAO_TRANS: S (Sessão) ou T (Transação). Os sistemas devem registrar as 
+transações com ‘T’ e a equipe de banco de dados poderá utilizar o valor ‘S’: 
+ T = Deverá ser utilizado pelos sistemas ou quando executado apenas um comando 
+DML; 
+ S = Deverá ser utilizado sempre que for necessária a execução de um bloco 
+ 
+BEGIN 
+<ESQUEMA>.SP_INICIA_AUDITORIA ("V_NO_LOGIN_APP" 
+IN VARCHAR(50), 
+"V_DS_IP" 
+ IN VARCHAR(160), 
+"V_DS_SISTEMA" 
+IN 
+VARCHAR(20), 
+"V_DS_TRANSACAO" IN VARCHAR(50), 
+"V_DS_OBSERVACAO" IN VARCHAR(255), 
+"V_SESSAO_TRANS" IN VARCHAR(1)) 
+<Bloco de Comandos> END 
+TRANSACTION 
+COMMIT 
+Ministério da Justiça e Segurança Pública 
+Secretaria-Executiva 
+Subsecretaria de Tecnologia da Informação e Comunicação 
+ 
+Metodologia de Padrões e Nomenclaturas de Banco de Dados 
+ 
+ 
+30/30 
+ 
+(conjunto) de comandos DML. 
+e) Nos Sistemas, o procedimento SP_INICIA_AUDITORIA deve ser executado dentro de uma 
+estrutura BEGIN-END TRANSACTION, junto à instrução DML a ser executada; 
+f) Nos sistemas, usar os seguintes valores como argumentos do procedimento 
+SP_INICIA_AUDITORIA: 
+• V_NO_LOGIN_APP: CPF/LOGIN do usuário que está logado no sistema; 
+• V_DS_IP: IP da máquina que o usuário está acessando o sistema; 
+• V_DS_SISTEMA: nome do sistema através do qual a instrução DML está sendo 
+executada; 
+• V_DS_TRANSACAO: Nome do módulo através do qual foi realizada a DML; 
+• V_DS_OBSERVACAO: indicação do Caso de Uso, Estórias de Usuários, Regras de 
+Negócios ou outros artefatos que descreva ou mapeie a funcionalidade que disparou 
+o comando DML; 
+• V_SESSAO_TRANS: T (Transação). 
+g) Quando executado pela equipe de banco de dados, devem ser utilizados os seguintes 
+valores como argumentos do procedimento SP_INICIA_AUDITORIA: 
+• V_NO_LOGIN_APP: CPF/ LOGIN do usuário que está executando o DML; 
+• V_DS_IP: IP da máquina do usuário que está executando o DML; 
+• V_DS_SISTEMA: Nome do sistema que utiliza o banco de dados. Salvo para bases de 
+dados que não possuem sistema correspondente, neste caso, usar “Não se aplica”; 
+• V_DS_TRANSACAO: ticket2 atendido pela contratada, que motivou a execução; 
+• V_DS_OBSERVACAO: observação geral; 
+• V_SESSAO_TRANS: T (Transação) ou S (Sessão). Sempre que o valor do parâmetro 
+V_SESSAO_TRANS for passado como ‘T’, deve ser usada uma estrutura BEGIN-END 
+TRANSACTION para isolar a execução do procedimento SP_INICIA_AUDITORIA e do 
+comando DML a ser executado. 
+ 
+11. FLUXO DE VALIDAÇÃO 
+ 
+11.1.  Validação do Modelo de Dados 
+A equipe de Administração de Dados fará uma análise do modelo de dados elaborado pela 
+equipe responsável pelo projeto, para verificar a aderência ao padrão definido neste documento. 
+ 
+11.2. Validação de Script 
+A equipe de Administração de Dados realiza a avaliação técnica do script enviado pela equipe 
+de desenvolvimento, garantindo que ele esteja em conformidade com as diretrizes deste 
+documento, incluindo padrões de nomenclatura, qualidade do modelo e documentação. 
